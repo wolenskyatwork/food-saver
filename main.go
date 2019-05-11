@@ -1,7 +1,19 @@
 package main
 
-import "fmt"
+import (
+	"github.com/gorilla/mux"
+	"github.com/wolenskyatwork/food-saver/handler"
+	"net/http"
+)
+
+func newRouter() *mux.Router {
+	router := mux.NewRouter()
+
+	router.HandleFunc("/activity", handler.GetActivityHandler).Methods("GET")
+	return router
+}
 
 func main() {
-	fmt.Println("Hello, world!")
+	router := newRouter()
+	http.ListenAndServe(":8081", router)
 }
