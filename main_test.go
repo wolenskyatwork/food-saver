@@ -7,34 +7,11 @@ import (
 	"testing"
 )
 
-func TestHandler(t *testing.T) {
-	req, err := http.NewRequest("GET", "", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	recorder := httptest.NewRecorder()
-	hf := http.HandlerFunc(handler)
-
-	hf.ServeHTTP(recorder, req)
-
-	if status := recorder.Code; status != http.StatusOK {
-		t.Errorf("handler returned wrong status code: got %v wanted %v", status, http.StatusOK)
-	}
-
-	expected := `Hello World!`
-	actual := recorder.Body.String()
-
-	if actual != expected {
-		t.Errorf("handler returned unexpected body: got %v wanted %v", actual, expected)
-	}
-}
-
 func TestRouter(t *testing.T) {
 	r := newRouter()
 	mockServer := httptest.NewServer(r)
 
-	resp, err := http.Get(mockServer.URL + "/hello")
+	resp, err := http.Get(mockServer.URL + "/healthcheck")
 	if err != nil {
 		t.Fatal(err)
 	}
