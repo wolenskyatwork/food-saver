@@ -21,7 +21,7 @@ func (s *StoreSuite) SetupSuite() {
 		s.T().Fatal(err)
 	}
 	s.db = db
-	s.store = &DBStore{db: db}
+	s.store = &DBStore{DB: db}
 }
 
 func (s *StoreSuite) SetupTest() {

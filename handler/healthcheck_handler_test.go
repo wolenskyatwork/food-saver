@@ -7,24 +7,24 @@ import (
 )
 
 func TestHealthcheckHandler(t *testing.T) {
-req, err := http.NewRequest("GET", "", nil)
-if err != nil {
-t.Fatal(err)
-}
+	req, err := http.NewRequest("GET", "", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
 
-recorder := httptest.NewRecorder()
-hf := http.HandlerFunc(GetHealthcheckHandler)
+	recorder := httptest.NewRecorder()
+	hf := http.HandlerFunc(GetHealthcheckHandler)
 
-hf.ServeHTTP(recorder, req)
+	hf.ServeHTTP(recorder, req)
 
-if status := recorder.Code; status != http.StatusOK {
-t.Errorf("handler returned wrong status code: got %v wanted %v", status, http.StatusOK)
-}
+	if status := recorder.Code; status != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v wanted %v", status, http.StatusOK)
+	}
 
-expected := `Hello World!`
-actual := recorder.Body.String()
+	expected := `Hello World!`
+	actual := recorder.Body.String()
 
-if actual != expected {
-t.Errorf("handler returned unexpected body: got %v wanted %v", actual, expected)
-}
+	if actual != expected {
+		t.Errorf("handler returned unexpected body: got %v wanted %v", actual, expected)
+	}
 }

@@ -31,7 +31,7 @@ func main() {
 	}
 
 	dbService := store.DBStore{DB: db}
-	activityHandler := handler.ActivityHandler{Service: dbService}
+	activityHandler := handler.ActivityHandler{Service: &dbService}
 
 	http.ListenAndServe(":8081", newRouter(activityHandler))
 }
