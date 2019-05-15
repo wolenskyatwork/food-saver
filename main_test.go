@@ -1,14 +1,17 @@
 package main
 
 import (
+	"github.com/wolenskyatwork/food-saver/handler"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 )
 
+var activityHandler = handler.ActivityHandler{}
+
 func TestRouter(t *testing.T) {
-	r := newRouter()
+	r := newRouter(activityHandler)
 	mockServer := httptest.NewServer(r)
 
 	resp, err := http.Get(mockServer.URL + "/healthcheck")
@@ -36,7 +39,7 @@ func TestRouter(t *testing.T) {
 }
 
 func TestRouterForNonExistentRoute(t *testing.T) {
-	r := newRouter()
+	r := newRouter(activityHandler)
 	mockServer := httptest.NewServer(r)
 	resp, err := http.Post(mockServer.URL + "/healthcheck", "", nil)
 	if err != nil {
