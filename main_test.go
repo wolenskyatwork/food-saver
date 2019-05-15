@@ -38,7 +38,7 @@ func TestRouter(t *testing.T) {
 func TestRouterForNonExistentRoute(t *testing.T) {
 	r := newRouter()
 	mockServer := httptest.NewServer(r)
-	resp, err := http.Post(mockServer.URL + "/hello", "", nil)
+	resp, err := http.Post(mockServer.URL + "/healthcheck", "", nil)
 	if err != nil {
 		t.Fatal(err)
 	}

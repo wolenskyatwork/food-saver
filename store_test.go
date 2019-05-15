@@ -1,11 +1,10 @@
-package store
+package main
 
 import (
 	"database/sql"
-	"github.com/stretchr/testify/suite"
-	"github.com/wolenskyatwork/food-saver/handler"
-	"testing"
 	_ "github.com/lib/pq"
+	"github.com/stretchr/testify/suite"
+	"testing"
 )
 
 type StoreSuite struct {
@@ -25,7 +24,7 @@ func (s *StoreSuite) SetupSuite() {
 }
 
 func (s *StoreSuite) SetupTest() {
-	_, err := s.db.Query("DELETE FROM activity")
+	_, err := s.db.Query("DELETE FROM activity_name")
 	if err != nil {
 		s.T().Fatal(err)
 	}
@@ -41,11 +40,11 @@ func TestStoreSuite(t *testing.T) {
 }
 
 func (s *StoreSuite) TestCreateActivity() {
-	s.store.CreateActivity(&handler.Activity{
+	s.store.CreateActivity(&Activity{
 		Name: "test name",
 	})
 
-	res, err := s.db.Query(`SELECT COUNT(*) FROM activities WHERE name='test name';`)
+	res, err := s.db.Query(`SELECT COUNT(*) FROM activity_name WHERE name='test name';`)
 	if err != nil {
 		s.T().Fatal(err)
 	}

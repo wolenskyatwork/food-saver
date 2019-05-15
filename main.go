@@ -11,7 +11,7 @@ func newRouter() *mux.Router {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/healthcheck", handler.GetHealthcheckHandler).Methods("GET")
-	router.HandleFunc("/activity", handler.GetActivityHandler).Methods("GET")
+	router.HandleFunc("/activity", GetActivityHandler).Methods("GET")
 
 	return router
 }

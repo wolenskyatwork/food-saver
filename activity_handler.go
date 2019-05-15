@@ -1,4 +1,4 @@
-package handler
+package main
 
 import (
 	"encoding/json"
@@ -10,9 +10,8 @@ type Activity struct {
 	Name string `json:"name"`
 }
 
-var activities []Activity
-
 func GetActivityHandler(w http.ResponseWriter, r *http.Request) {
+	activities, err := store.GetActivities()
 	activityListBytes, err := json.Marshal(activities)
 	if err != nil {
 		fmt.Println(fmt.Errorf("Error: %v", err))
