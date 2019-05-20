@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/wolenskyatwork/food-saver/dao"
-	"github.com/wolenskyatwork/food-saver/handler"
+	"github.com/wolenskyatwork/food-saver/controller"
 	"github.com/wolenskyatwork/food-saver/store"
 	"io/ioutil"
 	"net/http"
@@ -17,7 +17,7 @@ func TestActivityRouter(t *testing.T) {
 		{Name: "fake activity"},
 	}, nil).Once()
 
-	activityHandler := handler.ActivityHandler{
+	activityHandler := controller.ActivityHandler{
 		Service: mockStore,
 	}
 
@@ -49,7 +49,7 @@ func TestActivityRouter(t *testing.T) {
 }
 
 func TestHealthcheckRouter(t *testing.T) {
-	activityHandler := handler.ActivityHandler{}
+	activityHandler := controller.ActivityHandler{}
 
 	r := newRouter(activityHandler)
 	mockServer := httptest.NewServer(r)
@@ -79,7 +79,7 @@ func TestHealthcheckRouter(t *testing.T) {
 }
 
 func TestRouterForNonExistentRoute(t *testing.T) {
-	activityHandler := handler.ActivityHandler{}
+	activityHandler := controller.ActivityHandler{}
 	r := newRouter(activityHandler)
 	mockServer := httptest.NewServer(r)
 	resp, err := http.Post(mockServer.URL + "/healthcheck", "", nil)

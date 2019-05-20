@@ -2,7 +2,6 @@ package store
 
 import (
 	"database/sql"
-	"fmt"
 	"github.com/wolenskyatwork/food-saver/dao"
 )
 
@@ -15,6 +14,10 @@ type DBStore struct {
 	DB *sql.DB
 }
 
+func (store *DBStore) SaveActivityWIP() error {
+
+}
+
 func (store *DBStore) CreateActivity(activity *dao.Activity) error {
 	_, err := store.DB.Query("INSERT INTO activity_name (name) VALUES ($1);", activity.Name)
 	return err
@@ -22,8 +25,7 @@ func (store *DBStore) CreateActivity(activity *dao.Activity) error {
 
 func (store *DBStore) GetActivities() ([]*dao.Activity, error) {
 	rows, err := store.DB.Query("SELECT name FROM activity_name;")
-	fmt.Println(rows)
-	fmt.Println(err)
+
 	if err != nil {
 		return nil, err
 	}

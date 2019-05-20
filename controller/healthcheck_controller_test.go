@@ -1,4 +1,4 @@
-package handler
+package controller
 
 import (
 	"net/http"
@@ -6,14 +6,14 @@ import (
 	"testing"
 )
 
-func TestHealthcheckHandler(t *testing.T) {
+func TestHealthcheckController(t *testing.T) {
 	req, err := http.NewRequest("GET", "", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	recorder := httptest.NewRecorder()
-	hf := http.HandlerFunc(GetHealthcheckHandler)
+	hf := http.HandlerFunc(GetHealthcheckController)
 
 	hf.ServeHTTP(recorder, req)
 

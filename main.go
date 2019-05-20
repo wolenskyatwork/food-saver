@@ -4,16 +4,19 @@ import (
 	"database/sql"
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
-	"github.com/wolenskyatwork/food-saver/handler"
+	"github.com/wolenskyatwork/food-saver/controller"
 	"github.com/wolenskyatwork/food-saver/store"
 	"net/http"
 )
 
-func newRouter(activityHandler handler.ActivityHandler) *mux.Router{
+func newRouter(service *store.DBStore) *mux.Router{
 	router := mux.NewRouter()
 
-	router.HandleFunc("/healthcheck", handler.GetHealthcheckHandler).Methods("GET")
-	router.HandleFunc("/activity", activityHandler.GetActivityHandler).Methods("GET")
+	activityHandler := controller.ActivityController{ Service: service }
+
+
+	router.HandleFunc("/healthcheck", controller.GetHealthcheckController).Methods("GET")
+	router.HandleFunc("/activity", activityHandler.Index).Methods("GET")
 
 	return router
 }
@@ -31,9 +34,8 @@ func main() {
 	}
 
 	dbService := store.DBStore{DB: db}
-	activityHandler := handler.ActivityHandler{Service: &dbService}
 
-	http.ListenAndServe(":8081", newRouter(activityHandler))
+	http.ListenAndServe(":8081", newRouter(&dbService))
 }
 
 

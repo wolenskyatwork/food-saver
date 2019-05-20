@@ -1,4 +1,4 @@
-package handler
+package controller
 
 import (
 	"encoding/json"
@@ -7,11 +7,11 @@ import (
 	"github.com/wolenskyatwork/food-saver/store"
 )
 
-type ActivityHandler struct {
+type ActivityController struct {
 	Service store.Store
 }
 
-func (h ActivityHandler) GetActivityHandler(w http.ResponseWriter, r *http.Request) {
+func (h ActivityController) Index(w http.ResponseWriter, r *http.Request) {
 	activities, err := h.Service.GetActivities()
 	activityListBytes, err := json.Marshal(activities)
 	if err != nil {

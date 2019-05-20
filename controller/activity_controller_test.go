@@ -1,4 +1,4 @@
-package handler
+package controller
 
 import (
 	"encoding/json"
@@ -25,7 +25,7 @@ func (m MockStore) CreateActivity(activity *dao.Activity) error {
 
 func TestGetActivitiesHandler(t *testing.T) {
 	mockStore := new(MockStore)
-	activityHandler := ActivityHandler{
+	activityController := ActivityController{
 		Service: mockStore,
 	}
 
@@ -39,7 +39,7 @@ func TestGetActivitiesHandler(t *testing.T) {
 	}
 
 	recorder := httptest.NewRecorder()
-	hf := http.HandlerFunc(activityHandler.GetActivityHandler)
+	hf := http.HandlerFunc(activityController.Index)
 
 	hf.ServeHTTP(recorder, req)
 
