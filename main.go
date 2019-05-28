@@ -9,11 +9,10 @@ import (
 	"net/http"
 )
 
-func newRouter(service *store.DBStore) *mux.Router{
+func newRouter(service store.Store) *mux.Router{
 	router := mux.NewRouter()
 
 	activityHandler := controller.ActivityController{ Service: service }
-
 
 	router.HandleFunc("/healthcheck", controller.GetHealthcheckController).Methods("GET")
 	router.HandleFunc("/activity", activityHandler.Index).Methods("GET")
@@ -35,7 +34,7 @@ func main() {
 
 	dbService := store.DBStore{DB: db}
 
-	http.ListenAndServe(":8081", newRouter(&dbService))
+	http.ListenAndServe(":8081", newRouter(dbService))
 }
 
 

@@ -13,6 +13,10 @@ type MockStore struct {
 	mock.Mock
 }
 
+func init() {
+	// dao.CreateTestDatabase()
+}
+
 func (m MockStore) GetActivities() ([]*dao.Activity, error){
 	res := m.Called()
 	return res.Get(0).([]*dao.Activity), res.Error(1)

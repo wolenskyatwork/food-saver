@@ -22,3 +22,10 @@ func (h ActivityController) Index(w http.ResponseWriter, r *http.Request) {
 
 	w.Write(activityListBytes)
 }
+
+// TODO make sure name is correct
+
+func (h ActivityController) Create(w http.ResponseWriter, r *http.Request) {
+
+}
+
