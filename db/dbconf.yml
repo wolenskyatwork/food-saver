@@ -1,7 +1,7 @@
 # Not sure if we need this file or not
 
 # Database configuration for tests
-test:
+testing:
   driver: postgres
   open: dbname=life_logger_test user=life_logger_app sslmode=disable
 

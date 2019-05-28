@@ -1,6 +1,7 @@
 package store
 
 import (
+	"bitbucket.org/liamstask/goose/lib/goose"
 	"database/sql"
 	_ "github.com/lib/pq"
 	"github.com/stretchr/testify/suite"
@@ -11,28 +12,30 @@ import (
 type StoreSuite struct {
 	suite.Suite
 	store *DBStore
-	db *sql.DB
 }
 
 func (s *StoreSuite) SetupSuite() {
+	// TODO read this from the config
 	connString := "dbname=life_logger_test sslmode=disable"
 	db, err := sql.Open("postgres", connString)
 	if err != nil {
-		s.T().Fatal(err)
+		panic(err)
 	}
-	s.db = db
+
+	createGooseDatabase(db)
+
 	s.store = &DBStore{DB: db}
 }
 
 func (s *StoreSuite) SetupTest() {
-	_, err := s.db.Query("DELETE FROM activity_name")
+	_, err := s.store.DB.Query("DELETE FROM activity_name")
 	if err != nil {
 		s.T().Fatal(err)
 	}
 }
 
 func (s *StoreSuite) TearDownSuite() {
-	s.db.Close()
+	s.store.DB.Close()
 }
 
 func TestStoreSuite(t *testing.T) {
@@ -45,7 +48,7 @@ func (s *StoreSuite) TestCreateActivity() {
 		Name: "test name",
 	})
 
-	res, err := s.db.Query(`SELECT COUNT(*) FROM activity_name WHERE name='test name';`)
+	res, err := s.store.DB.Query(`SELECT COUNT(*) FROM activity_name WHERE name='test name';`)
 	if err != nil {
 		s.T().Fatal(err)
 	}
@@ -60,5 +63,26 @@ func (s *StoreSuite) TestCreateActivity() {
 
 	if count != 1 {
 		s.T().Errorf("incorrect count, wanted 1, got %d", count)
+	}
+}
+
+func createGooseDatabase(db *sql.DB) {
+	_, err := db.Exec("drop schema public cascade; create schema public;")
+	if err != nil {
+		panic(err)
+	}
+
+	conf, err := goose.NewDBConf("../db", "testing", "")
+	if err != nil {
+		panic(err)
+	}
+
+	target, err := goose.GetMostRecentDBVersion(conf.MigrationsDir)
+	if err != nil {
+		panic(err)
+	}
+
+	if err := goose.RunMigrationsOnDb(conf, conf.MigrationsDir, target, db); err != nil {
+		panic(err)
 	}
 }
