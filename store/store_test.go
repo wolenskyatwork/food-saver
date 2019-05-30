@@ -6,6 +6,7 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/stretchr/testify/suite"
 	"github.com/wolenskyatwork/food-saver/dao"
+	"reflect"
 	"testing"
 )
 
@@ -44,21 +45,32 @@ func TestStoreSuite(t *testing.T) {
 }
 
 func (s *StoreSuite) TestGetActivityNames() {
-	//wanted := []dao.Activity{
-	//	{Name: "knitting"},
-	//	{Name: "therapy"},
-	//}
-	//
-	//for _, a := range wanted {
-	//	s.store.CreateActivity(&a)
-	//}
-	//
-	//got, err := s.store.GetActivities()
-	//if err != nil {
-	//	s.T().Fatal(err)
-	//}
-	  //
- 	 //if length(got) !=
+	_, err := s.store.DB.Query("INSERT INTO activity_name (name) VALUES ('medicine'),('workout'),('climbing'),('biking'),('archery'),('spartan');")
+	if err != nil {
+		s.T().Fatal(err)
+	}
+
+	got, err := s.store.GetActivityNames()
+	if err != nil {
+		s.T().Fatal(err)
+	}
+
+	wanted := []*dao.ActivityName{
+		{Name: "medicine"},
+		{Name: "workout"},
+		{Name: "climbing"},
+		{Name: "biking"},
+		{Name: "archery"},
+		{Name: "spartan"},
+	}
+
+	if len(got) != len(wanted) {
+		s.T().Errorf("incorrect count, wanted %d, got %d", len(wanted), len(got))
+	}
+
+	if !reflect.DeepEqual(wanted, got) {
+		s.T().Errorf("Slices do not match, wanted %s, got %s", wanted, got)
+	}
 
 }
 
