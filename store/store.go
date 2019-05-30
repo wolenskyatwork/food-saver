@@ -6,20 +6,20 @@ import (
 )
 
 type Store interface {
-	CreateActivity(activity *dao.Activity) error
-	GetActivities() ([]*dao.Activity, error)
+	CreateActivityName(activity *dao.ActivityName) error
+	GetActivityNames() ([]*dao.ActivityName, error)
 }
 
 type DBStore struct {
 	DB *sql.DB
 }
 
-func (store DBStore) CreateActivity(activity *dao.Activity) error {
+func (store DBStore) CreateActivityName(activity *dao.ActivityName) error {
 	_, err := store.DB.Query("INSERT INTO activity_name (name) VALUES ($1);", activity.Name)
 	return err
 }
 
-func (store DBStore) GetActivities() ([]*dao.Activity, error) {
+func (store DBStore) GetActivityNames() ([]*dao.ActivityName, error) {
 	rows, err := store.DB.Query("SELECT name FROM activity_name;")
 
 	if err != nil {
@@ -27,15 +27,15 @@ func (store DBStore) GetActivities() ([]*dao.Activity, error) {
 	}
 	defer rows.Close()
 
-	activities := []*dao.Activity{}
+	activityNames := []*dao.ActivityName{}
 	for rows.Next() {
-		activity := &dao.Activity{}
-		if err := rows.Scan(&activity.Name); err != nil {
+		activityName := &dao.ActivityName{}
+		if err := rows.Scan(&activityName.Name); err != nil {
 			return nil, err
 		}
 
-		activities = append(activities, activity)
+		activityNames = append(activityNames, activityName)
 	}
 
-	return activities, nil
+	return activityNames, nil
 }

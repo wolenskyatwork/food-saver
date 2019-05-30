@@ -43,8 +43,27 @@ func TestStoreSuite(t *testing.T) {
 	suite.Run(t, s)
 }
 
-func (s *StoreSuite) TestCreateActivity() {
-	s.store.CreateActivity(&dao.Activity{
+func (s *StoreSuite) TestGetActivityNames() {
+	//wanted := []dao.Activity{
+	//	{Name: "knitting"},
+	//	{Name: "therapy"},
+	//}
+	//
+	//for _, a := range wanted {
+	//	s.store.CreateActivity(&a)
+	//}
+	//
+	//got, err := s.store.GetActivities()
+	//if err != nil {
+	//	s.T().Fatal(err)
+	//}
+	  //
+ 	 //if length(got) !=
+
+}
+
+func (s *StoreSuite) TestCreateActivityName() {
+	s.store.CreateActivityName(&dao.ActivityName{
 		Name: "test name",
 	})
 

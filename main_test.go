@@ -12,14 +12,14 @@ import (
 func TestActivityRouter(t *testing.T) {
 	mockStore := new(store.MockStore)
 
-	mockStore.On("GetActivities").Return([]*dao.Activity{
+	mockStore.On("GetActivityNames").Return([]*dao.ActivityName{
 		{Name: "fake activity"},
 	}, nil).Once()
 
 	r := newRouter(mockStore)
 	mockServer := httptest.NewServer(r)
 
-	resp, err := http.Get(mockServer.URL + "/activity")
+	resp, err := http.Get(mockServer.URL + "/activityName")
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -17,23 +17,23 @@ func init() {
 	// dao.CreateTestDatabase()
 }
 
-func (m MockStore) GetActivities() ([]*dao.Activity, error){
+func (m MockStore) GetActivityNames() ([]*dao.ActivityName, error){
 	res := m.Called()
-	return res.Get(0).([]*dao.Activity), res.Error(1)
+	return res.Get(0).([]*dao.ActivityName), res.Error(1)
 }
 
-func (m MockStore) CreateActivity(activity *dao.Activity) error {
+func (m MockStore) CreateActivityName(activity *dao.ActivityName) error {
 	res := m.Called(activity)
 	return res.Error(0)
 }
 
-func TestGetActivitiesHandler(t *testing.T) {
+func TestGetActivityNamesHandler(t *testing.T) {
 	mockStore := new(MockStore)
 	activityController := ActivityController{
 		Service: mockStore,
 	}
 
-	mockStore.On("GetActivities").Return([]*dao.Activity{
+	mockStore.On("GetActivityNames").Return([]*dao.ActivityName{
 		{Name: "fake activity"},
 	}, nil).Once()
 
@@ -51,8 +51,8 @@ func TestGetActivitiesHandler(t *testing.T) {
 		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
 	}
 
-	expected := dao.Activity{ "fake activity" }
-	a := []dao.Activity{}
+	expected := dao.ActivityName{ "fake activity" }
+	a := []dao.ActivityName{}
 	err = json.NewDecoder(recorder.Body).Decode(&a)
 
 	if err != nil {

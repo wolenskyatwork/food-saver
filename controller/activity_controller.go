@@ -12,7 +12,7 @@ type ActivityController struct {
 }
 
 func (h ActivityController) Index(w http.ResponseWriter, r *http.Request) {
-	activities, err := h.Service.GetActivities()
+	activities, err := h.Service.GetActivityNames()
 	activityListBytes, err := json.Marshal(activities)
 	if err != nil {
 		fmt.Println(fmt.Errorf("Error: %v", err))

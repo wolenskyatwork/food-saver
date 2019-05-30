@@ -15,7 +15,7 @@ func newRouter(service store.Store) *mux.Router{
 	activityHandler := controller.ActivityController{ Service: service }
 
 	router.HandleFunc("/healthcheck", controller.GetHealthcheckController).Methods("GET")
-	router.HandleFunc("/activity", activityHandler.Index).Methods("GET")
+	router.HandleFunc("/activityName", activityHandler.Index).Methods("GET")
 
 	return router
 }

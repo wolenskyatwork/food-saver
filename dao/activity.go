@@ -1,6 +1,5 @@
 package dao
 
-type Activity struct {
+type ActivityName struct {
 	Name string `json:"name"`
 }
-
