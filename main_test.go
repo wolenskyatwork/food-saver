@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"github.com/wolenskyatwork/food-saver/dao"
 	"github.com/wolenskyatwork/food-saver/store"
 	"io/ioutil"
@@ -9,7 +11,8 @@ import (
 	"testing"
 )
 
-func TestActivityRouter(t *testing.T) {
+func TestActivityNameRouter(t *testing.T) {
+	// TODO not sure yet how to do this
 	mockStore := new(store.MockStore)
 
 	mockStore.On("GetActivityNames").Return([]*dao.ActivityName{
@@ -36,9 +39,12 @@ func TestActivityRouter(t *testing.T) {
 	}
 
 	respString := string(b)
-	expected := "Hello World!"
+	expected, err := json.Marshal(dao.ActivityName{Name: "fake activity"})
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	if respString != expected {
+	if !bytes.Equal(b, expected) {
 		t.Errorf("Response should be %s, got %s", expected, respString)
 	}
 }
