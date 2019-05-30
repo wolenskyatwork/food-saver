@@ -7,11 +7,11 @@ import (
 	"github.com/wolenskyatwork/food-saver/store"
 )
 
-type ActivityController struct {
+type ActivityNameController struct {
 	Service store.Store
 }
 
-func (h ActivityController) Index(w http.ResponseWriter, r *http.Request) {
+func (h ActivityNameController) Index(w http.ResponseWriter, r *http.Request) {
 	activities, err := h.Service.GetActivityNames()
 	activityListBytes, err := json.Marshal(activities)
 	if err != nil {
@@ -25,7 +25,7 @@ func (h ActivityController) Index(w http.ResponseWriter, r *http.Request) {
 
 // TODO make sure name is correct
 
-func (h ActivityController) Create(w http.ResponseWriter, r *http.Request) {
+func (h ActivityNameController) Create(w http.ResponseWriter, r *http.Request) {
 
 }
 

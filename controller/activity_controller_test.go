@@ -13,10 +13,6 @@ type MockStore struct {
 	mock.Mock
 }
 
-func init() {
-	// dao.CreateTestDatabase()
-}
-
 func (m MockStore) GetActivityNames() ([]*dao.ActivityName, error){
 	res := m.Called()
 	return res.Get(0).([]*dao.ActivityName), res.Error(1)
@@ -29,7 +25,7 @@ func (m MockStore) CreateActivityName(activity *dao.ActivityName) error {
 
 func TestGetActivityNamesHandler(t *testing.T) {
 	mockStore := new(MockStore)
-	activityController := ActivityController{
+	activityController := ActivityNameController{
 		Service: mockStore,
 	}
 
