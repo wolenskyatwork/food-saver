@@ -13,6 +13,11 @@ type MockStore struct {
 	mock.Mock
 }
 
+func (m MockStore) GetActivities() ([]*dao.Activity, error){
+	res := m.Called()
+	return res.Get(0).([]*dao.Activity), res.Error(1)
+}
+
 func (m MockStore) GetActivityNames() ([]*dao.ActivityName, error){
 	res := m.Called()
 	return res.Get(0).([]*dao.ActivityName), res.Error(1)

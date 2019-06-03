@@ -19,7 +19,7 @@ func TestActivityNameRouter(t *testing.T) {
 		{Name: "fake activity"},
 	}, nil).Once()
 
-	r := newRouter(mockStore)
+	r := NewRouter(mockStore)
 	mockServer := httptest.NewServer(r)
 
 	resp, err := http.Get(mockServer.URL + "/activityName")
@@ -52,7 +52,7 @@ func TestActivityNameRouter(t *testing.T) {
 func TestHealthcheckRouter(t *testing.T) {
 	mockStore := new(store.MockStore)
 
-	r := newRouter(mockStore)
+	r := NewRouter(mockStore)
 	mockServer := httptest.NewServer(r)
 
 	resp, err := http.Get(mockServer.URL + "/healthcheck")
@@ -82,7 +82,7 @@ func TestHealthcheckRouter(t *testing.T) {
 func TestRouterForNonExistentRoute(t *testing.T) {
 	mockStore := new(store.MockStore)
 
-	r := newRouter(mockStore)
+	r := NewRouter(mockStore)
 	mockServer := httptest.NewServer(r)
 	resp, err := http.Post(mockServer.URL + "/healthcheck", "", nil)
 	if err != nil {

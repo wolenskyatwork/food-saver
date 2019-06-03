@@ -2,23 +2,11 @@ package main
 
 import (
 	"database/sql"
-	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
 	"github.com/wolenskyatwork/food-saver/controller"
 	"github.com/wolenskyatwork/food-saver/store"
 	"net/http"
 )
-
-func newRouter(service store.Store) *mux.Router{
-	router := mux.NewRouter()
-
-	activityNameController := controller.ActivityNameController{ Service: service }
-
-	router.HandleFunc("/healthcheck", controller.GetHealthcheckController).Methods("GET")
-	router.HandleFunc("/activityName", activityNameController.Index).Methods("GET")
-
-	return router
-}
 
 func main() {
 	connString := "dbname=life_logger user=life_logger_app sslmode=disable"
@@ -34,7 +22,7 @@ func main() {
 
 	dbService := store.DBStore{DB: db}
 
-	http.ListenAndServe(":8081", newRouter(dbService))
+	http.ListenAndServe(":8081", controller.NewRouter(dbService))
 }
 
 
