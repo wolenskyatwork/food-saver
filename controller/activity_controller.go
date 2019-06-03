@@ -2,9 +2,8 @@ package controller
 
 import (
 	"encoding/json"
-	"fmt"
-	"net/http"
 	"github.com/wolenskyatwork/food-saver/store"
+	"net/http"
 )
 
 type ActivityController struct {
@@ -13,12 +12,14 @@ type ActivityController struct {
 
 func (h ActivityController) Index(w http.ResponseWriter, r *http.Request) {
 	activities, err := h.Service.GetActivities()
-	activityListBytes, err := json.Marshal(activities)
-	if err != nil {
-		fmt.Println(fmt.Errorf("Error: %v", err))
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
 
-	w.Write(activityListBytes)
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(err.Error())
+	} else {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(activities)
+	}
 }

@@ -1,8 +1,9 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"github.com/wolenskyatwork/food-saver/dao"
-	"github.com/wolenskyatwork/food-saver/controller"
 	"github.com/wolenskyatwork/food-saver/store"
 	"io/ioutil"
 	"net/http"
@@ -10,21 +11,18 @@ import (
 	"testing"
 )
 
-func TestActivityRouter(t *testing.T) {
+func TestActivityNameRouter(t *testing.T) {
+	// TODO not sure yet how to do this
 	mockStore := new(store.MockStore)
 
-	mockStore.On("GetActivities").Return([]*dao.Activity{
+	mockStore.On("GetActivityNames").Return([]*dao.ActivityName{
 		{Name: "fake activity"},
 	}, nil).Once()
 
-	activityHandler := controller.ActivityHandler{
-		Service: mockStore,
-	}
-
-	r := newRouter(activityHandler)
+	r := NewRouter(mockStore)
 	mockServer := httptest.NewServer(r)
 
-	resp, err := http.Get(mockServer.URL + "/activity")
+	resp, err := http.Get(mockServer.URL + "/activityName")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -41,17 +39,20 @@ func TestActivityRouter(t *testing.T) {
 	}
 
 	respString := string(b)
-	expected := "Hello World!"
+	expected, err := json.Marshal(dao.ActivityName{Name: "fake activity"})
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	if respString != expected {
+	if !bytes.Equal(b, expected) {
 		t.Errorf("Response should be %s, got %s", expected, respString)
 	}
 }
 
 func TestHealthcheckRouter(t *testing.T) {
-	activityHandler := controller.ActivityHandler{}
+	mockStore := new(store.MockStore)
 
-	r := newRouter(activityHandler)
+	r := NewRouter(mockStore)
 	mockServer := httptest.NewServer(r)
 
 	resp, err := http.Get(mockServer.URL + "/healthcheck")
@@ -79,8 +80,9 @@ func TestHealthcheckRouter(t *testing.T) {
 }
 
 func TestRouterForNonExistentRoute(t *testing.T) {
-	activityHandler := controller.ActivityHandler{}
-	r := newRouter(activityHandler)
+	mockStore := new(store.MockStore)
+
+	r := NewRouter(mockStore)
 	mockServer := httptest.NewServer(r)
 	resp, err := http.Post(mockServer.URL + "/healthcheck", "", nil)
 	if err != nil {

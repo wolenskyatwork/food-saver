@@ -2,64 +2,48 @@ package controller
 
 import (
 	"encoding/json"
+	. "github.com/smartystreets/goconvey/convey"
 	"github.com/wolenskyatwork/food-saver/dao"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"github.com/stretchr/testify/mock"
 )
 
-type MockStore struct {
-	mock.Mock
-}
-
-func (m MockStore) GetActivities() ([]*dao.Activity, error){
-	res := m.Called()
-	return res.Get(0).([]*dao.Activity), res.Error(1)
-}
-
-func (m MockStore) CreateActivity(activity *dao.Activity) error {
-	res := m.Called(activity)
-	return res.Error(0)
-}
-
-func TestGetActivitiesHandler(t *testing.T) {
+func TestActivityController(t *testing.T) {
 	mockStore := new(MockStore)
-	activityController := ActivityController{
-		Service: mockStore,
-	}
+	router := NewRouter(mockStore)
+	server := httptest.NewServer(router)
 
-	mockStore.On("GetActivities").Return([]*dao.Activity{
-		{Name: "fake activity"},
-	}, nil).Once()
+	Convey("Given http response", t, func(){
+		knitting := dao.Activity{Name: "knitting", DateCompleted: "2019-05-10"}
+		spartan := dao.Activity{Name: "spartan", DateCompleted: "2019-05-10"}
+		paleo := dao.Activity{Name: "paleo", DateCompleted: "2019-05-11"}
 
-	req, err := http.NewRequest("GET", "", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
+		mockStore.On("GetActivities").Return([]*dao.Activity{
+			&knitting,
+			&spartan,
+			&paleo,
+		}, nil).Once()
 
-	recorder := httptest.NewRecorder()
-	hf := http.HandlerFunc(activityController.Index)
+		url := server.URL + "/activity"
+		resp, _ := http.Get(url)
+		defer resp.Body.Close()
 
-	hf.ServeHTTP(recorder, req)
+		//this So is ok, it doesn't follow given when then, but it is just a check in a preparation step
+		So(resp.StatusCode, ShouldEqual, http.StatusOK)
 
-	if status := recorder.Code; status != http.StatusOK {
-		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
-	}
+		Convey("When decoding the response", func(){
+			activities := []dao.Activity{}
+			err := json.NewDecoder(resp.Body).Decode(&activities)
 
-	expected := dao.Activity{ "fake activity" }
-	a := []dao.Activity{}
-	err = json.NewDecoder(recorder.Body).Decode(&a)
+			Convey("Then decode response has correct elements", func(){
+				So(err, ShouldBeNil)
+				So(activities, ShouldHaveLength, 3)
+				So(activities[0], ShouldResemble, dao.Activity{Name: "knitting", DateCompleted: "2019-05-10"})
+			})
+		})
 
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	actual := a[0]
-
-	if actual != expected {
-		t.Errorf("handler returned unexpected body: got %v want %v", actual, expected)
-	}
-
-	mockStore.AssertExpectations(t)
+		server.Close()
+	})
 }
+
