@@ -5,6 +5,7 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/wolenskyatwork/food-saver/controller"
 	"github.com/wolenskyatwork/food-saver/store"
+	"github.com/gorilla/handlers"
 	"net/http"
 )
 
@@ -22,7 +23,8 @@ func main() {
 
 	dbService := store.DBStore{DB: db}
 
-	http.ListenAndServe(":8081", controller.NewRouter(dbService))
+	corsObj := handlers.AllowedOrigins([]string{"*"})
+	http.ListenAndServe(":8081", handlers.CORS(corsObj)(controller.NewRouter(dbService)))
 }
 
 

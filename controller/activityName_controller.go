@@ -13,14 +13,15 @@ type ActivityNameController struct {
 
 func (h ActivityNameController) Index(w http.ResponseWriter, r *http.Request) {
 	activities, err := h.Service.GetActivityNames()
-	activityListBytes, err := json.Marshal(activities)
+
 	if err != nil {
 		fmt.Println(fmt.Errorf("Error: %v", err))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+	w.Header().Set("Content-Type", "application/json")
 
-	w.Write(activityListBytes)
+	json.NewEncoder(w).Encode(activities)
 }
 
 // TODO make sure name is correct
