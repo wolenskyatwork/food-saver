@@ -33,7 +33,7 @@ func (store DBStore) CreateActivityName(activity *dao.ActivityName) error {
 }
 
 func (store DBStore) GetActivityNames() ([]*dao.ActivityName, error) {
-	rows, err := store.DB.Query("SELECT name FROM activity_name;")
+	rows, err := store.DB.Query("SELECT name, id FROM activity_name;")
 
 	if err != nil {
 		return nil, err
@@ -43,7 +43,7 @@ func (store DBStore) GetActivityNames() ([]*dao.ActivityName, error) {
 	activityNames := []*dao.ActivityName{}
 	for rows.Next() {
 		activityName := &dao.ActivityName{}
-		if err := rows.Scan(&activityName.Name); err != nil {
+		if err := rows.Scan(&activityName.Name, &activityName.Id); err != nil {
 			return nil, err
 		}
 

@@ -45,7 +45,7 @@ func TestStoreSuite(t *testing.T) {
 }
 
 func (s *StoreSuite) TestGetActivityNames() {
-	_, err := s.store.DB.Query("INSERT INTO activity_name (name) VALUES ('medicine'),('workout'),('climbing'),('biking'),('archery'),('spartan');")
+	_, err := s.store.DB.Exec("INSERT INTO activity_name (name) VALUES ('medicine'),('workout'),('climbing'),('biking'),('archery'),('spartan');")
 	if err != nil {
 		s.T().Fatal(err)
 	}
@@ -56,12 +56,12 @@ func (s *StoreSuite) TestGetActivityNames() {
 	}
 
 	wanted := []*dao.ActivityName{
-		{Name: "medicine"},
-		{Name: "workout"},
-		{Name: "climbing"},
-		{Name: "biking"},
-		{Name: "archery"},
-		{Name: "spartan"},
+		{Name: "medicine", Id: "1" },
+		{Name: "workout", Id: "2" },
+		{Name: "climbing", Id: "3" },
+		{Name: "biking", Id: "4" },
+		{Name: "archery", Id: "5" },
+		{Name: "spartan", Id: "6" },
 	}
 
 	if len(got) != len(wanted) {

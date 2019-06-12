@@ -40,7 +40,7 @@ func TestGetActivityNamesHandler(t *testing.T) {
 	}
 
 	mockStore.On("GetActivityNames").Return([]*dao.ActivityName{
-		{Name: "fake activity"},
+		{ Name: "fake activity", Id: "1" },
 	}, nil).Once()
 
 	req, err := http.NewRequest("GET", "", nil)
@@ -57,7 +57,7 @@ func TestGetActivityNamesHandler(t *testing.T) {
 		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
 	}
 
-	expected := dao.ActivityName{ "fake activity" }
+	expected := dao.ActivityName{ Name: "fake activity", Id: "1" }
 	a := []dao.ActivityName{}
 	err = json.NewDecoder(recorder.Body).Decode(&a)
 
