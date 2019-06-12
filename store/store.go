@@ -3,24 +3,32 @@ package store
 import (
 	"database/sql"
 	"github.com/wolenskyatwork/food-saver/dao"
+	"github.com/wolenskyatwork/food-saver/user"
 )
 
 type Store interface {
 	CreateActivityName(activity *dao.ActivityName) error
 	GetActivityNames() ([]*dao.ActivityName, error)
-	// GetActivities() ([]*dao.Activity, error)
+	CreateActivity(dao.Activity) error
+	GetActivities() ([]*dao.Activity, error)
 }
 
 type DBStore struct {
 	DB *sql.DB
 }
 
-//func (store DBStore) GetActivityNames(user dao.AppUser) {
-//	fmt.Print("Doesn't even matter right now")
-//}
+func (store DBStore) CreateActivity(activity dao.Activity) error {
+	_, err := store.DB.Exec("INSERT INTO activity (activity_name, app_user_id, datetime_completed) VALUES ($1, $2, $3)",
+		activity.Id, user.GetUserId(), activity.DateCompleted)
+	return err
+}
+
+func (store DBStore) GetActivities() ([]*dao.Activity, error) {
+	return []*dao.Activity{}, nil
+}
 
 func (store DBStore) CreateActivityName(activity *dao.ActivityName) error {
-	_, err := store.DB.Query("INSERT INTO activity_name (name) VALUES ($1);", activity.Name)
+	_, err := store.DB.Exec("INSERT INTO activity_name (name) VALUES ($1);", activity.Name)
 	return err
 }
 

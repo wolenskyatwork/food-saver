@@ -19,3 +19,9 @@ func (m *MockStore) GetActivityNames() ([]*dao.ActivityName, error) {
 	return res.Get(0).([]*dao.ActivityName), res.Error(1)
 }
 
+func (m *MockStore) GetActivities() ([]*dao.Activity, error) {
+	//TODO fix this
+	res := m.Called()
+	return res.Get(0).([]*dao.Activity), res.Error(1)
+}
+
