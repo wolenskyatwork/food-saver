@@ -8,7 +8,7 @@ import (
 
 type Store interface {
 	CreateActivityName(activity *dao.ActivityName) error
-	GetActivityNames() ([]*dao.ActivityName, error)
+	GetActivityNames(userId string) ([]*dao.ActivityName, error)
 	CreateActivity(dao.Activity) error
 	GetActivities() ([]*dao.Activity, error)
 }
@@ -32,8 +32,8 @@ func (store DBStore) CreateActivityName(activity *dao.ActivityName) error {
 	return err
 }
 
-func (store DBStore) GetActivityNames() ([]*dao.ActivityName, error) {
-	rows, err := store.DB.Query("SELECT name, id FROM activity_name;")
+func (store DBStore) GetActivityNames(userId string) ([]*dao.ActivityName, error) {
+	rows, err := store.DB.Query("SELECT an.id, an.name FROM user_activity ua INNER JOIN activity_name an ON an.id = ua.activity_id WHERE ua.app_user_id = $1;", userId)
 
 	if err != nil {
 		return nil, err

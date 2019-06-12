@@ -12,7 +12,7 @@ type ActivityNameController struct {
 }
 
 func (h ActivityNameController) Index(w http.ResponseWriter, r *http.Request) {
-	activities, err := h.Service.GetActivityNames()
+	activities, err := h.Service.GetActivityNames("1")
 
 	if err != nil {
 		fmt.Println(fmt.Errorf("Error: %v", err))

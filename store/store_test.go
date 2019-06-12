@@ -3,6 +3,7 @@ package store
 import (
 	"bitbucket.org/liamstask/goose/lib/goose"
 	"database/sql"
+	. "github.com/smartystreets/goconvey/convey"
 	_ "github.com/lib/pq"
 	"github.com/stretchr/testify/suite"
 	"github.com/wolenskyatwork/food-saver/dao"
@@ -23,16 +24,11 @@ func (s *StoreSuite) SetupSuite() {
 		panic(err)
 	}
 
-	createGooseDatabase(db)
-
 	s.store = &DBStore{DB: db}
 }
 
 func (s *StoreSuite) SetupTest() {
-	_, err := s.store.DB.Query("DELETE FROM activity_name")
-	if err != nil {
-		s.T().Fatal(err)
-	}
+	createGooseDatabase(s.store.DB)
 }
 
 func (s *StoreSuite) TearDownSuite() {
@@ -50,7 +46,17 @@ func (s *StoreSuite) TestGetActivityNames() {
 		s.T().Fatal(err)
 	}
 
-	got, err := s.store.GetActivityNames()
+	-, err := s.store.DB.Exec("INSERT INTO app_user (username) VALUES ('sailorflares'), ('closgmr');")
+	if err != nil {
+		s.T().Fatal(err)
+	}
+
+	_, err = s.store.DB.Exec("INSERT INTO user_activity (activity_id, app_user_id) VALUES (1,1), (2,1), (3,1), (4,2);")
+	if err != nil {
+		s.T().Fatal(err)
+	}
+
+	got, err := s.store.GetActivityNames("1")
 	if err != nil {
 		s.T().Fatal(err)
 	}
@@ -59,9 +65,24 @@ func (s *StoreSuite) TestGetActivityNames() {
 		{Name: "medicine", Id: "1" },
 		{Name: "workout", Id: "2" },
 		{Name: "climbing", Id: "3" },
+	}
+
+	if len(got) != len(wanted) {
+		s.T().Errorf("incorrect count, wanted %d, got %d", len(wanted), len(got))
+	}
+
+	if !reflect.DeepEqual(wanted, got) {
+		So(wanted, ShouldResemble, got)
+		// s.T().Errorf("Slices do not match, wanted %s, got %s", wanted, got)
+	}
+
+	got, err = s.store.GetActivityNames("2")
+	if err != nil {
+		s.T().Fatal(err)
+	}
+
+	wanted = []*dao.ActivityName{
 		{Name: "biking", Id: "4" },
-		{Name: "archery", Id: "5" },
-		{Name: "spartan", Id: "6" },
 	}
 
 	if len(got) != len(wanted) {
@@ -71,7 +92,6 @@ func (s *StoreSuite) TestGetActivityNames() {
 	if !reflect.DeepEqual(wanted, got) {
 		s.T().Errorf("Slices do not match, wanted %s, got %s", wanted, got)
 	}
-
 }
 
 func (s *StoreSuite) TestCreateActivityName() {

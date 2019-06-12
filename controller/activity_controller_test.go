@@ -3,42 +3,40 @@ package controller
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/gorilla/mux"
 	. "github.com/smartystreets/goconvey/convey"
-	"github.com/stretchr/testify/suite"
 	"github.com/wolenskyatwork/food-saver/dao"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 )
+//
+//func TestActivityControllerTestSuite(t *testing.T) {
+//	suite.Run(t, new(ActivityControllerTestSuite))
+//}
+//
+//type ActivityControllerTestSuite struct {
+//	suite.Suite
+//}
+//
+//var mockStore MockStore
+//var router *mux.Router
+//var server *httptest.Server
+//
+//func (suite *ActivityControllerTestSuite) SetupTestSuite() {
+//	mockStore = MockStore{}
+//	router = NewRouter(mockStore)
+//	server = httptest.NewServer(router)
+//}
+//
+//func (suite *ActivityControllerTestSuite) TearDownAllSuite() {
+//	server.Close()
+//}
 
-func TestActivityControllerTestSuite(t *testing.T) {
-	suite.Run(t, new(ActivityControllerTestSuite))
-}
-
-type ActivityControllerTestSuite struct {
-	suite.Suite
-}
-
-var mockStore MockStore
-var router *mux.Router
-var server *httptest.Server
-
-func (suite *ActivityControllerTestSuite) SetupAllSuite() {
-	mockStore := new(MockStore)
-	router = NewRouter(mockStore)
-	server = httptest.NewServer(router)
-}
-
-func (suite *ActivityControllerTestSuite) TearDownAllSuite() {
-	server.Close()
-}
-
-func (suite *ActivityControllerTestSuite) TestCreate() {
-	Convey("Given an http post to /activity", suite.T(), func() {
-		mockStore := new(MockStore)
-		router = NewRouter(mockStore)
-		server = httptest.NewServer(router)
+func TestCreate(t *testing.T) {
+	Convey("Given an http post to /activity", t, func() {
+		mockStore := MockStore{}
+		router := NewRouter(mockStore)
+		server := httptest.NewServer(router)
 
 		values := dao.Activity{Id: "1", UserId: "1", DateCompleted: "2017-03-14"}
 		jsonValue, _ := json.Marshal(values)
@@ -57,8 +55,12 @@ func (suite *ActivityControllerTestSuite) TestCreate() {
 	})
 }
 
-func (suite *ActivityControllerTestSuite) TestIndex() {
-	Convey("Given http get to /activity", suite.T(), func(){
+func TestIndex(t *testing.T) {
+	Convey("Given http get to /activity", t, func(){
+		mockStore := MockStore{}
+		router := NewRouter(mockStore)
+		server := httptest.NewServer(router)
+
 		knitting := dao.Activity{Name: "knitting", DateCompleted: "2019-05-10"}
 		spartan := dao.Activity{Name: "spartan", DateCompleted: "2019-05-10"}
 		paleo := dao.Activity{Name: "paleo", DateCompleted: "2019-05-11"}
@@ -70,7 +72,19 @@ func (suite *ActivityControllerTestSuite) TestIndex() {
 		}, nil).Once()
 
 		url := server.URL + "/activity"
-		resp, _ := http.Get(url)
+
+		req, err := http.NewRequest("GET", url, nil)
+		req.Close = true
+
+		if err != nil {
+			So(err, ShouldBeNil)
+		}
+
+		resp, err := http.Client{}.Do(req)
+		if err != nil {
+			So(err, ShouldBeNil)
+		}
+
 		defer resp.Body.Close()
 
 		So(resp.StatusCode, ShouldEqual, http.StatusOK)
