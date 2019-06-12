@@ -2,5 +2,5 @@ package dao
 
 type ActivityName struct {
 	Name string `json:"name"`
-	Id string `json: id`
+	Id string `json:"id"`
 }
