@@ -43,7 +43,7 @@ func (store DBStore) GetActivityNames(userId string) ([]*dao.ActivityName, error
 	activityNames := []*dao.ActivityName{}
 	for rows.Next() {
 		activityName := &dao.ActivityName{}
-		if err := rows.Scan(&activityName.Name, &activityName.Id); err != nil {
+		if err := rows.Scan(&activityName.Id, &activityName.Name); err != nil {
 			return nil, err
 		}
 

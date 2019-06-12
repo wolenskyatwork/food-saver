@@ -3,11 +3,10 @@ package store
 import (
 	"bitbucket.org/liamstask/goose/lib/goose"
 	"database/sql"
-	. "github.com/smartystreets/goconvey/convey"
 	_ "github.com/lib/pq"
+	. "github.com/smartystreets/goconvey/convey"
 	"github.com/stretchr/testify/suite"
 	"github.com/wolenskyatwork/food-saver/dao"
-	"reflect"
 	"testing"
 )
 
@@ -41,57 +40,48 @@ func TestStoreSuite(t *testing.T) {
 }
 
 func (s *StoreSuite) TestGetActivityNames() {
-	_, err := s.store.DB.Exec("INSERT INTO activity_name (name) VALUES ('medicine'),('workout'),('climbing'),('biking'),('archery'),('spartan');")
-	if err != nil {
-		s.T().Fatal(err)
-	}
+	Convey("when known data exists in db", s.T(), func() {
+		_, err := s.store.DB.Exec("INSERT INTO activity_name (name) VALUES ('medicine'),('workout'),('climbing'),('biking'),('archery'),('spartan');")
+		if err != nil {
+			s.T().Fatal(err)
+		}
 
-	-, err := s.store.DB.Exec("INSERT INTO app_user (username) VALUES ('sailorflares'), ('closgmr');")
-	if err != nil {
-		s.T().Fatal(err)
-	}
+		_, err = s.store.DB.Exec("INSERT INTO app_user (username) VALUES ('sailorflares'), ('closgmr');")
+		if err != nil {
+			s.T().Fatal(err)
+		}
 
-	_, err = s.store.DB.Exec("INSERT INTO user_activity (activity_id, app_user_id) VALUES (1,1), (2,1), (3,1), (4,2);")
-	if err != nil {
-		s.T().Fatal(err)
-	}
+		_, err = s.store.DB.Exec("INSERT INTO user_activity (activity_id, app_user_id) VALUES (1,1), (2,1), (3,1), (4,2);")
+		if err != nil {
+			s.T().Fatal(err)
+		}
 
-	got, err := s.store.GetActivityNames("1")
-	if err != nil {
-		s.T().Fatal(err)
-	}
+		actual, err := s.store.GetActivityNames("1")
+		if err != nil {
+			s.T().Fatal(err)
+		}
 
-	wanted := []*dao.ActivityName{
-		{Name: "medicine", Id: "1" },
-		{Name: "workout", Id: "2" },
-		{Name: "climbing", Id: "3" },
-	}
+		expected := []*dao.ActivityName{
+			{Name: "medicine", Id: "1" },
+			{Name: "workout", Id: "2" },
+			{Name: "climbing", Id: "3" },
+		}
 
-	if len(got) != len(wanted) {
-		s.T().Errorf("incorrect count, wanted %d, got %d", len(wanted), len(got))
-	}
+		So(actual, ShouldHaveLength, len(expected))
+		So(actual, ShouldResemble, expected)
 
-	if !reflect.DeepEqual(wanted, got) {
-		So(wanted, ShouldResemble, got)
-		// s.T().Errorf("Slices do not match, wanted %s, got %s", wanted, got)
-	}
+		actual, err = s.store.GetActivityNames("2")
+		if err != nil {
+			s.T().Fatal(err)
+		}
 
-	got, err = s.store.GetActivityNames("2")
-	if err != nil {
-		s.T().Fatal(err)
-	}
+		expected = []*dao.ActivityName{
+			{Name: "biking", Id: "4" },
+		}
 
-	wanted = []*dao.ActivityName{
-		{Name: "biking", Id: "4" },
-	}
-
-	if len(got) != len(wanted) {
-		s.T().Errorf("incorrect count, wanted %d, got %d", len(wanted), len(got))
-	}
-
-	if !reflect.DeepEqual(wanted, got) {
-		s.T().Errorf("Slices do not match, wanted %s, got %s", wanted, got)
-	}
+		So(actual, ShouldHaveLength, len(expected))
+		So(actual, ShouldResemble, expected)
+	})
 }
 
 func (s *StoreSuite) TestCreateActivityName() {
