@@ -1,54 +1,13 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
 	"github.com/wolenskyatwork/food-saver/controller"
-	"github.com/wolenskyatwork/food-saver/dao"
 	"github.com/wolenskyatwork/food-saver/store"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 )
-
-func TestActivityNameRouter(t *testing.T) {
-	// TODO not sure yet how to do this
-	mockStore := new(store.MockStore)
-
-	mockStore.On("GetActivityNames").Return([]*dao.ActivityName{
-		{Name: "fake activity"},
-	}, nil).Once()
-
-	r := controller.NewRouter(mockStore)
-	mockServer := httptest.NewServer(r)
-
-	resp, err := http.Get(mockServer.URL + "/activityNames")
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("Status should be ok, got %d", resp.StatusCode)
-	}
-
-	defer resp.Body.Close()
-
-	b, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	respString := string(b)
-	expected, err := json.Marshal(dao.ActivityName{Name: "fake activity"})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if !bytes.Equal(b, expected) {
-		t.Errorf("Response should be %s, got %s", expected, respString)
-	}
-}
 
 func TestHealthcheckRouter(t *testing.T) {
 	mockStore := new(store.MockStore)

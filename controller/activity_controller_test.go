@@ -37,19 +37,19 @@ func TestCreate(t *testing.T) {
 
 func TestIndex(t *testing.T) {
 	Convey("Given http get to /activity", t, func(){
-		mockStore := store.MockStore{}
-		router := NewRouter(mockStore)
-		server := httptest.NewServer(router)
-
 		knitting := dao.Activity{Name: "knitting", DateCompleted: "2019-05-10"}
 		spartan := dao.Activity{Name: "spartan", DateCompleted: "2019-05-10"}
 		paleo := dao.Activity{Name: "paleo", DateCompleted: "2019-05-11"}
 
+		mockStore := store.MockStore{}
 		mockStore.On("GetActivities").Return([]*dao.Activity{
 			&knitting,
 			&spartan,
 			&paleo,
-		}, nil).Once()
+		}, nil)
+
+		router := NewRouter(mockStore)
+		server := httptest.NewServer(router)
 
 		url := server.URL + "/activity"
 
