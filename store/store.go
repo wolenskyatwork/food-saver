@@ -10,7 +10,7 @@ type Store interface {
 	CreateActivityName(activity *dao.ActivityName) error
 	GetActivityNames(userId string) ([]*dao.ActivityName, error)
 	CreateActivity(dao.Activity) error
-	GetActivities() ([]*dao.Activity, error)
+	GetActivities(userId string) ([]*dao.Activity, error)
 }
 
 type DBStore struct {
@@ -27,8 +27,23 @@ func (store *DBStore) CreateActivity(activity dao.Activity) error {
 	return err
 }
 
-func (store *DBStore) GetActivities() ([]*dao.Activity, error) {
-	return []*dao.Activity{}, nil
+func (store *DBStore) GetActivities(userId string) ([]*dao.Activity, error) {
+	rows, err := store.DB.Query("SELECT a.activity_id, a.app_user_id, a.datetime_completed, an.name FROM activity a LEFT JOIN activity_name an ON a.activity_id = an.id WHERE a.app_user_id = $1;", userId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	activities := []*dao.Activity{}
+	for rows.Next() {
+		activity := &dao.Activity{}
+		if err := rows.Scan(&activity.Id, &activity.UserId, &activity.DateCompleted, &activity.Name); err != nil {
+			return nil, err
+		}
+
+		activities = append(activities, activity)
+	}
+	return activities, nil
 }
 
 func (store *DBStore) CreateActivityName(activity *dao.ActivityName) error {

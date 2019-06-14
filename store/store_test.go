@@ -84,6 +84,54 @@ func (s *StoreSuite) TestGetActivityNames() {
 	})
 }
 
+func (s *StoreSuite) TestGetActivities() {
+	Convey("when the data exists", s.T(), func() {
+		_, err := s.store.DB.Exec("INSERT INTO activity_name (name) VALUES ('medicine'),('workout'),('climbing'),('biking'),('archery'),('spartan');")
+		if err != nil {
+			s.T().Fatal(err)
+		}
+
+		_, err = s.store.DB.Exec("INSERT INTO app_user (username) VALUES ('sailorflares'), ('closgmr');")
+		if err != nil {
+			s.T().Fatal(err)
+		}
+
+		_, err = s.store.DB.Exec("INSERT INTO user_activity (activity_id, app_user_id) VALUES (1,1), (2,1), (3,1), (4,2);")
+		if err != nil {
+			s.T().Fatal(err)
+		}
+
+		_, err = s.store.DB.Exec("INSERT INTO activity (activity_id, app_user_id, datetime_completed) VALUES (1,1,'2019-4-12'), (2,1,'2018-4-12'), (3,1,'2017-4-12'), (4,2,'2016-4-12');")
+		if err != nil {
+			s.T().Fatal(err)
+		}
+
+		actual, err := s.store.GetActivities("1")
+
+		if err != nil {
+			s.T().Fatal(err)
+		}
+
+		expected := []*dao.Activity{
+			{Name: "medicine", Id: "1", UserId: "1", DateCompleted: "2019-04-12T00:00:00Z"},
+			{Name: "workout", Id: "2", UserId: "1", DateCompleted: "2018-04-12T00:00:00Z" },
+			{Name: "climbing", Id: "3", UserId: "1", DateCompleted: "2017-04-12T00:00:00Z" },
+		}
+
+		So(actual, ShouldHaveLength, len(expected))
+		So(actual, ShouldResemble, expected)
+	})
+}
+
+func (s *StoreSuite) TestCreateActivity() {
+	s.store.CreateActivity(dao.Activity{
+		Id: "2",
+		UserId: "1",
+		DateCompleted: "2019-1-2",
+	})
+	s.T().Fatal("not implemented")
+}
+
 func (s *StoreSuite) TestCreateActivityName() {
 	s.store.CreateActivityName(&dao.ActivityName{
 		Name: "test name",

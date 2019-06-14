@@ -30,7 +30,6 @@ func TestCreate(t *testing.T) {
 
 			// TODO hook up to full db? This is kind of not testing everything
 			Convey("Then the controller called the correct store function with correct inputs", func() {
-				// TODO NOT WORKING
 				mockStore.AssertCalled(t, "CreateActivity", values)
 			})
 		})
@@ -45,7 +44,7 @@ func TestIndex(t *testing.T) {
 		paleo := dao.Activity{Name: "paleo", DateCompleted: "2019-05-11"}
 
 		mockStore := store.MockStore{}
-		mockStore.On("GetActivities").Return([]*dao.Activity{
+		mockStore.On("GetActivities", "1").Return([]*dao.Activity{
 			&knitting,
 			&spartan,
 			&paleo,

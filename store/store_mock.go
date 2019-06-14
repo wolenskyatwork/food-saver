@@ -18,8 +18,8 @@ func (m *MockStore) CreateActivity(activity dao.Activity) error {
 	return res.Error(0)
 }
 
-func (m *MockStore) GetActivities() ([]*dao.Activity, error){
-	res := m.Called()
+func (m *MockStore) GetActivities(userId string) ([]*dao.Activity, error){
+	res := m.Called(userId)
 	return res.Get(0).([]*dao.Activity), res.Error(1)
 }
 

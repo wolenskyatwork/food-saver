@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"github.com/gorilla/mux"
 	"github.com/wolenskyatwork/food-saver/dao"
 	"github.com/wolenskyatwork/food-saver/store"
 	"net/http"
@@ -16,7 +17,8 @@ func NewActivityController(service store.Store) Controller {
 }
 
 func (ac ActivityController) Index(w http.ResponseWriter, r *http.Request) {
-	activities, err := ac.Service.GetActivities()
+	vars := mux.Vars(r)
+	activities, err := ac.Service.GetActivities(vars["userId"])
 
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
