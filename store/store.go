@@ -22,7 +22,7 @@ func NewDBStore(db *sql.DB) Store {
 }
 
 func (store *DBStore) CreateActivity(activity dao.Activity) error {
-	_, err := store.DB.Exec("INSERT INTO activity (activity_name, app_user_id, datetime_completed) VALUES ($1, $2, $3)",
+	_, err := store.DB.Exec("INSERT INTO activity (activity_id, app_user_id, datetime_completed) VALUES ($1, $2, $3)",
 		activity.Id, user.GetUserId(), activity.DateCompleted)
 	return err
 }
