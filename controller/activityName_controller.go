@@ -29,6 +29,6 @@ func (h ActivityNameController) Index(w http.ResponseWriter, r *http.Request) {
 // TODO make sure name is correct
 
 func (h ActivityNameController) Create(w http.ResponseWriter, r *http.Request) {
-
+	w.WriteHeader(http.StatusNotImplemented)
 }
 

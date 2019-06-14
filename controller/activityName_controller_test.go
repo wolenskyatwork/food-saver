@@ -10,7 +10,7 @@ import (
 )
 
 func TestGetActivityNamesHandler(t *testing.T) {
-	mockStore := store.MockStore{}
+	mockStore := &store.MockStore{}
 
 	mockStore.On("GetActivityNames", "").Return([]*dao.ActivityName{
 		{ Name: "fake activity", Id: "1" },

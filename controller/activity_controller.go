@@ -41,6 +41,8 @@ func (ac ActivityController) Create(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(err.Error())
 	}
 
+	err = ac.Service.CreateActivity(activity)
+
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)

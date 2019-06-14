@@ -21,7 +21,7 @@ func main() {
 		panic(err)
 	}
 
-	dbService := store.DBStore{DB: db}
+	dbService := store.NewDBStore(db)
 
 	corsObj := handlers.AllowedOrigins([]string{"*"})
 	http.ListenAndServe(":8081", handlers.CORS(corsObj)(controller.NewRouter(dbService)))

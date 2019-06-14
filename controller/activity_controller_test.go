@@ -13,7 +13,9 @@ import (
 
 func TestCreate(t *testing.T) {
 	Convey("Given an http post to /user/{userId}/activity", t, func() {
-		mockStore := store.MockStore{}
+		mockStore := &store.MockStore{}
+
+		mockStore.On("CreateActivity", dao.Activity{Id: "1", UserId: "1", DateCompleted: "2017-03-14"}).Return(nil)
 		router := NewRouter(mockStore)
 		server := httptest.NewServer(router)
 
@@ -22,13 +24,14 @@ func TestCreate(t *testing.T) {
 		url := server.URL + "/user/1/activity"
 
 		resp, _ := http.Post(url, "application/json", bytes.NewBuffer(jsonValue))
-		defer resp.Body.Close()
 
 		Convey("When client receives expected status code", func() {
 			So(resp.StatusCode, ShouldEqual, http.StatusCreated)
 
+			// TODO hook up to full db? This is kind of not testing everything
 			Convey("Then the controller called the correct store function with correct inputs", func() {
-				// mockStore.AssertCalled(suite.T(), "InsertActivity", 1, 1, "2017-03-14s")
+				// TODO NOT WORKING
+				mockStore.AssertCalled(t, "CreateActivity", values)
 			})
 		})
 		server.Close()
@@ -48,7 +51,7 @@ func TestIndex(t *testing.T) {
 			&paleo,
 		}, nil)
 
-		router := NewRouter(mockStore)
+		router := NewRouter(&mockStore)
 		server := httptest.NewServer(router)
 
 		url := server.URL + "/user/1/activity"
