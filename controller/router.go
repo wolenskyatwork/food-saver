@@ -12,9 +12,9 @@ func NewRouter(service store.Store) *mux.Router{
 	activityController := NewActivityController(service)
 
 	router.HandleFunc("/healthcheck", GetHealthcheckController).Methods("GET")
-	router.HandleFunc("/activityNames", activityNameController.Index).Methods("GET")
-	router.HandleFunc("/activity", activityController.Index).Methods("GET")
-	router.HandleFunc("/activity", activityController.Create).Methods("POST")
+	router.HandleFunc("/user/{userId}/activityName", activityNameController.Index).Methods("GET")
+	router.HandleFunc("/user/{userId}/activity", activityController.Index).Methods("GET")
+	router.HandleFunc("/user/{userId}/activity", activityController.Create).Methods("POST")
 
 	return router
 }

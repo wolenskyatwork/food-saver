@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/gorilla/mux"
 	"net/http"
 	"github.com/wolenskyatwork/food-saver/store"
 )
@@ -12,7 +13,8 @@ type ActivityNameController struct {
 }
 
 func (h ActivityNameController) Index(w http.ResponseWriter, r *http.Request) {
-	activities, err := h.Service.GetActivityNames("1")
+	vars := mux.Vars(r)
+	activities, err := h.Service.GetActivityNames(vars["userId"])
 
 	if err != nil {
 		fmt.Println(fmt.Errorf("Error: %v", err))

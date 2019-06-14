@@ -12,14 +12,14 @@ import (
 )
 
 func TestCreate(t *testing.T) {
-	Convey("Given an http post to /activity", t, func() {
+	Convey("Given an http post to /user/{userId}/activity", t, func() {
 		mockStore := store.MockStore{}
 		router := NewRouter(mockStore)
 		server := httptest.NewServer(router)
 
 		values := dao.Activity{Id: "1", UserId: "1", DateCompleted: "2017-03-14"}
 		jsonValue, _ := json.Marshal(values)
-		url := server.URL + "/activity"
+		url := server.URL + "/user/1/activity"
 
 		resp, _ := http.Post(url, "application/json", bytes.NewBuffer(jsonValue))
 		defer resp.Body.Close()
@@ -36,7 +36,7 @@ func TestCreate(t *testing.T) {
 }
 
 func TestIndex(t *testing.T) {
-	Convey("Given http get to /activity", t, func(){
+	Convey("Given http get to /user/{userId}/activity", t, func(){
 		knitting := dao.Activity{Name: "knitting", DateCompleted: "2019-05-10"}
 		spartan := dao.Activity{Name: "spartan", DateCompleted: "2019-05-10"}
 		paleo := dao.Activity{Name: "paleo", DateCompleted: "2019-05-11"}
@@ -51,7 +51,7 @@ func TestIndex(t *testing.T) {
 		router := NewRouter(mockStore)
 		server := httptest.NewServer(router)
 
-		url := server.URL + "/activity"
+		url := server.URL + "/user/1/activity"
 
 		resp, err := http.Get(url)
 		if err != nil {

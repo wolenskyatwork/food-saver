@@ -20,7 +20,8 @@ func (m MockStore) GetActivities() ([]*dao.Activity, error){
 }
 
 func (m MockStore) GetActivityNames(userId string) ([]*dao.ActivityName, error){
-	res := m.Called()
+	// testing environment not recognizing mux.Vars(r), must call this function with "" as userId
+	res := m.Called(userId)
 	return res.Get(0).([]*dao.ActivityName), res.Error(1)
 }
 

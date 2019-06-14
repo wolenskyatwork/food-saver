@@ -10,16 +10,17 @@ import (
 )
 
 func TestGetActivityNamesHandler(t *testing.T) {
-	mockStore := new(store.MockStore)
+	mockStore := store.MockStore{}
+
+	mockStore.On("GetActivityNames", "").Return([]*dao.ActivityName{
+		{ Name: "fake activity", Id: "1" },
+	}, nil)
+
 	activityController := ActivityNameController{
 		Service: mockStore,
 	}
 
-	mockStore.On("GetActivityNames").Return([]*dao.ActivityName{
-		{ Name: "fake activity", Id: "1" },
-	}, nil).Once()
-
-	req, err := http.NewRequest("GET", "", nil)
+	req, err := http.NewRequest("GET", "/user/1/activityName", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
