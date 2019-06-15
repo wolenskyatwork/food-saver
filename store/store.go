@@ -2,6 +2,7 @@ package store
 
 import (
 	"database/sql"
+	"errors"
 	"github.com/wolenskyatwork/food-saver/dao"
 	"github.com/wolenskyatwork/food-saver/user"
 )
@@ -22,9 +23,13 @@ func NewDBStore(db *sql.DB) Store {
 }
 
 func (store *DBStore) CreateActivity(activity dao.Activity) error {
-	_, err := store.DB.Exec("INSERT INTO activity (activity_id, app_user_id, datetime_completed) VALUES ($1, $2, $3)",
-		activity.Id, user.GetUserId(), activity.DateCompleted)
-	return err
+	if activity.Id == "" || activity.DateCompleted == "" || activity.UserId == "" {
+		return errors.New("Missing id or datecompleted on activity")
+	} else {
+		_, err := store.DB.Exec("INSERT INTO activity (activity_id, app_user_id, datetime_completed) VALUES ($1, $2, $3)",
+			activity.Id, user.GetUserId(), activity.DateCompleted)
+		return err
+	}
 }
 
 func (store *DBStore) GetActivities(userId string) ([]*dao.Activity, error) {

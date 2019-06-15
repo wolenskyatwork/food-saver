@@ -165,6 +165,17 @@ func (s *StoreSuite) TestCreateActivity() {
 	})
 }
 
+func (s *StoreSuite) TestCreateActivityMalformedData() {
+	Convey("When the activity is missing required fields", s.T(), func() {
+		err := s.store.CreateActivity(dao.Activity{
+			Id: "2",
+			UserId: "1",
+		})
+
+		So(err, ShouldNotBeNil)
+	})
+}
+
 func (s *StoreSuite) TestCreateActivityName() {
 	s.store.CreateActivityName(&dao.ActivityName{
 		Name: "test name",

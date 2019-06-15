@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/gorilla/mux"
 	"github.com/wolenskyatwork/food-saver/dao"
 	"github.com/wolenskyatwork/food-saver/store"
@@ -41,6 +42,12 @@ func (ac ActivityController) Create(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest) // I guess?
 		json.NewEncoder(w).Encode(err.Error())
+		return
+	} else if activity.Id == "" || activity.DateCompleted == "" || activity.UserId == "" {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(errors.New("missing required info to create activity"))
+		return
 	}
 
 	err = ac.Service.CreateActivity(activity)
