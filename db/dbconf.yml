@@ -1,5 +1,3 @@
-# Not sure if we need this file or not
-
 # Database configuration for tests
 testing:
   driver: postgres
@@ -8,7 +6,7 @@ testing:
 # Database configuration for local development
 localhost:
   driver: postgres
-  open: dbname=life_logger user=life_logger_app sslmode=disable
+  open: dbname=life_logger user=life_logger_app sslmode=disab
 
 development:
   driver: postgres

@@ -21,6 +21,16 @@ func (ac ActivityController) Index(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	activities, err := ac.Service.GetActivities(vars["userId"])
 
+	activityDates := make(map[string][]*dao.Activity)
+
+	for _, activity := range activities {
+		if v, ok := activityDates[activity.DateCompleted]; ok {
+			activityDates[activity.DateCompleted] = append(v, activity)
+		} else {
+			activityDates[activity.DateCompleted] = []*dao.Activity{activity}
+		}
+	}
+
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -28,7 +38,7 @@ func (ac ActivityController) Index(w http.ResponseWriter, r *http.Request) {
 	} else {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(activities)
+		json.NewEncoder(w).Encode(activityDates)
 	}
 }
 

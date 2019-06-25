@@ -65,15 +65,19 @@ func TestIndex(t *testing.T) {
 		So(resp.StatusCode, ShouldEqual, http.StatusOK)
 
 		Convey("When decoding the response", func(){
-			activities := []dao.Activity{}
+			activities := make(map[string][]*dao.Activity)
 			err := json.NewDecoder(resp.Body).Decode(&activities)
 
 			Convey("Then decode response has correct elements", func(){
 				So(err, ShouldBeNil)
-				So(activities, ShouldHaveLength, 3)
-				So(activities[0], ShouldResemble, dao.Activity{Name: "knitting", DateCompleted: "2019-05-10"})
-				So(activities[1], ShouldResemble, dao.Activity{Name: "spartan", DateCompleted: "2019-05-10"})
-				So(activities[2], ShouldResemble, dao.Activity{Name: "paleo", DateCompleted: "2019-05-11"})
+				So(activities, ShouldHaveLength, 2)
+				So(activities["2019-05-10"], ShouldResemble, []*dao.Activity{
+					&knitting,
+					&spartan,
+				})
+				So(activities["2019-05-11"], ShouldResemble, []*dao.Activity{
+					&paleo,
+				})
 			})
 		})
 		server.Close()
