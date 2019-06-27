@@ -11,7 +11,7 @@ import (
 	"testing"
 )
 
-func TestCreate(t *testing.T) {
+func TestActivityCreate(t *testing.T) {
 	Convey("Given an http post to /user/{userId}/activity", t, func() {
 		mockStore := &store.MockStore{}
 
@@ -37,7 +37,7 @@ func TestCreate(t *testing.T) {
 	})
 }
 
-func TestIndex(t *testing.T) {
+func TestActivityIndex(t *testing.T) {
 	Convey("Given http get to /user/{userId}/activity", t, func(){
 		knitting := dao.Activity{Name: "knitting", DateCompleted: "2019-05-10"}
 		spartan := dao.Activity{Name: "spartan", DateCompleted: "2019-05-10"}

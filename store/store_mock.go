@@ -29,6 +29,12 @@ func (m *MockStore) GetActivityNames(userId string) ([]*dao.ActivityName, error)
 	return res.Get(0).([]*dao.ActivityName), res.Error(1)
 }
 
+func (m *MockStore) GetWeights(userId string) ([]*dao.Weight, error){
+	// testing environment not recognizing mux.Vars(r), must call this function with "" as userId
+	res := m.Called(userId)
+	return res.Get(0).([]*dao.Weight), res.Error(1)
+}
+
 func (m *MockStore) CreateActivityName(activity *dao.ActivityName) error {
 	res := m.Called(activity)
 	return res.Error(0)
