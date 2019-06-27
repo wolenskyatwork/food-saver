@@ -35,6 +35,11 @@ func (m *MockStore) GetWeights(userId string) ([]*dao.Weight, error){
 	return res.Get(0).([]*dao.Weight), res.Error(1)
 }
 
+func (m *MockStore) CreateWeight(weight dao.Weight) error {
+	res := m.Called(weight)
+	return res.Error(0)
+}
+
 func (m *MockStore) CreateActivityName(activity *dao.ActivityName) error {
 	res := m.Called(activity)
 	return res.Error(0)

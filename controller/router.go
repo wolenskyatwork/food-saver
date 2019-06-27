@@ -17,6 +17,7 @@ func NewRouter(service store.Store) *mux.Router{
 	router.HandleFunc("/user/{userId}/activity", activityController.Index).Methods("GET")
 	router.HandleFunc("/user/{userId}/activity", activityController.Create).Methods("POST")
 	router.HandleFunc("/user/{userId}/weight", weightController.Index).Methods("GET")
+	router.HandleFunc("/user/{userId}/weight", weightController.Create).Methods("POST")
 
 	return router
 }
