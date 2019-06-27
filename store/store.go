@@ -24,23 +24,21 @@ func NewDBStore(db *sql.DB) Store {
 }
 
 func (store *DBStore) GetWeights(userId string) ([]*dao.Weight, error) {
- //rows, err := store.DB.Query("SELECT id, app_user_id, weight, weight_date FROM weight WHERE app_user_id = $1", userId)
- //if err != err {
- //	return nil, err
- //}
- //defer rows.Close()
- //
- //var weights []*dao.Weight
- //for rows.Next() {
-	// weight := &dao.Weight{}
-	// if err := rows.Scan(&weight.Id, &weight.UserId, &weight.Weight, &weight.WeightDate); err != nil {
-	//	 return nil, err
-	// }
- //
-	// weights = append(weights, weight)
- //}
+ rows, err := store.DB.Query("SELECT id, app_user_id, weight, weight_date FROM weight WHERE app_user_id = $1", userId)
+ if err != err {
+ 	return nil, err
+ }
+ defer rows.Close()
 
  var weights []*dao.Weight
+ for rows.Next() {
+	weight := &dao.Weight{}
+	if err := rows.Scan(&weight.Id, &weight.UserId, &weight.Weight, &weight.WeightDate); err != nil {
+		 return nil, err
+	}
+
+	weights = append(weights, weight)
+ }
 
  return weights, nil
 }

@@ -18,6 +18,7 @@ func NewWeightController(service store.Store) Controller {
 func (wc WeightController) Index(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	weights, err := wc.Service.GetWeights(vars["userId"])
+
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)

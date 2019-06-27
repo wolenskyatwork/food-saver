@@ -17,7 +17,7 @@ type StoreSuite struct {
 
 func (s *StoreSuite) SetupSuite() {
 	// TODO read this from the config
-	connString := "dbname=life_logger_test sslmode=disable"
+	connString := "dbname=life_logger_test user=life_logger_app sslmode=disable"
 	db, err := sql.Open("postgres", connString)
 	if err != nil {
 		panic(err)
@@ -197,6 +197,60 @@ func (s *StoreSuite) TestCreateActivityName() {
 	if count != 1 {
 		s.T().Errorf("incorrect count, wanted 1, got %d", count)
 	}
+}
+
+func (s *StoreSuite) TestGetWeights() {
+	Convey("When known weights exist", s.T(), func() {
+		_, err := s.store.DB.Exec("INSERT INTO app_user (username) VALUES ('sailorflares'), ('closgmr');")
+		if err != nil {
+			So(err, ShouldBeNil)
+		}
+
+		_, err = s.store.DB.Exec("INSERT INTO weight (app_user_id, weight, weight_date) VALUES ('1', 143.7, '2019-06-23');")
+		if err != nil {
+			So(err, ShouldBeNil)
+		}
+
+		_, err = s.store.DB.Exec("INSERT INTO weight (app_user_id, weight, weight_date) VALUES ('1', 142.7, '2019-06-22');")
+		if err != nil {
+			So(err, ShouldBeNil)
+		}
+
+		_, err = s.store.DB.Exec("INSERT INTO weight (app_user_id, weight, weight_date) VALUES ('1', 141.7, '2019-06-21');")
+		if err != nil {
+			So(err, ShouldBeNil)
+		}
+
+		w0 := dao.Weight{
+			Id: "1",
+			UserId: "1",
+			Weight: 143.7,
+			WeightDate: "2019-06-23T00:00:00Z",
+		}
+
+		w1 := dao.Weight{
+			Id: "2",
+			UserId: "1",
+			Weight: 142.7,
+			WeightDate: "2019-06-22T00:00:00Z",
+		}
+
+		w2 := dao.Weight{
+			Id: "3",
+			UserId: "1",
+			Weight: 141.7,
+			WeightDate: "2019-06-21T00:00:00Z",
+		}
+
+		Convey("then Service returns correctly mapped weights", func() {
+			weights, err := s.store.GetWeights("1")
+			So(err, ShouldBeNil)
+			So(weights, ShouldHaveLength, 3)
+			So(weights[0], ShouldResemble, &w0)
+			So(weights[1], ShouldResemble, &w1)
+			So(weights[2], ShouldResemble, &w2)
+		})
+	})
 }
 
 func createGooseDatabase(db *sql.DB) {
