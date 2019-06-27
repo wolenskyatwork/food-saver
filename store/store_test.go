@@ -177,26 +177,26 @@ func (s *StoreSuite) TestCreateActivityMalformedData() {
 }
 
 func (s *StoreSuite) TestCreateActivityName() {
-	s.store.CreateActivityName(&dao.ActivityName{
-		Name: "test name",
-	})
+	Convey("When createactivityname is called", s.T(), func() {
+		s.store.CreateActivityName(&dao.ActivityName{
+			Name: "test name",
+		})
 
-	res, err := s.store.DB.Query(`SELECT COUNT(*) FROM activity_name WHERE name='test name';`)
-	if err != nil {
-		s.T().Fatal(err)
-	}
-
-	var count int
-	for res.Next() {
-		err := res.Scan(&count)
+		res, err := s.store.DB.Query(`SELECT COUNT(*) FROM activity_name WHERE name='test name';`)
 		if err != nil {
-			s.T().Error(err)
+			So(err, ShouldBeNil)
 		}
-	}
 
-	if count != 1 {
-		s.T().Errorf("incorrect count, wanted 1, got %d", count)
-	}
+		var count int
+		for res.Next() {
+			err := res.Scan(&count)
+			if err != nil {
+				So(err, ShouldBeNil)
+			}
+		}
+
+		So(count, ShouldEqual, 1)
+	})
 }
 
 func (s *StoreSuite) TestGetWeights() {
@@ -249,6 +249,45 @@ func (s *StoreSuite) TestGetWeights() {
 			So(weights[0], ShouldResemble, &w0)
 			So(weights[1], ShouldResemble, &w1)
 			So(weights[2], ShouldResemble, &w2)
+		})
+	})
+}
+
+func (s *StoreSuite) TestCreateWeight() {
+	_, err := s.store.DB.Exec("INSERT INTO app_user (username) VALUES ('sailorflares'), ('closgmr');")
+	if err != nil {
+		So(err, ShouldBeNil)
+	}
+
+	Convey("When calling createWeight function", s.T(), func() {
+		weight := dao.Weight{
+			UserId: "1",
+			Weight: 142.1,
+			WeightDate: "2019-06-22",
+		}
+		err := s.store.CreateWeight(weight)
+		So(err, ShouldBeNil)
+
+		Convey("then the row should have been created in the db", func() {
+			res, err := s.store.DB.Query(`SELECT id, app_user_id, weight, weight_date FROM weight WHERE app_user_id = 1;`)
+			if err != nil {
+				So(err, ShouldBeNil)
+			}
+
+			var weight dao.Weight
+			for res.Next() {
+				err := res.Scan(&weight.Id, &weight.UserId, &weight.Weight, &weight.WeightDate)
+				if err != nil {
+					So(err, ShouldBeNil)
+				}
+			}
+
+			So(weight, ShouldResemble, dao.Weight{
+				Id: "1",
+				UserId: "1",
+				Weight: 142.1,
+				WeightDate: "2019-06-22T00:00:00Z",
+			})
 		})
 	})
 }

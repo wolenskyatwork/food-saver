@@ -13,6 +13,7 @@ type Store interface {
 	CreateActivity(dao.Activity) error
 	GetActivities(userId string) ([]*dao.Activity, error)
 	GetWeights(userId string) ([]*dao.Weight, error)
+	CreateWeight(dao.Weight) error
 }
 
 type DBStore struct {
@@ -21,6 +22,12 @@ type DBStore struct {
 
 func NewDBStore(db *sql.DB) Store {
 	return &DBStore{DB: db}
+}
+
+func (store *DBStore) CreateWeight(weight dao.Weight) error {
+	_, err := store.DB.Exec("INSERT INTO weight (app_user_id, weight, weight_date) VALUES ($1, $2, $3)",
+		weight.UserId, weight.Weight, weight.WeightDate)
+	return err
 }
 
 func (store *DBStore) GetWeights(userId string) ([]*dao.Weight, error) {
