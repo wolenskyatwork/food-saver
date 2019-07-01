@@ -1,0 +1,24 @@
+INSERT INTO training_time (name) VALUES
+    ('FIRST THING AM TRAINING'),
+    ('TRAINING AFTER 1 MEAL'),
+    ('TRAINING AFTER 2 MEALS'),
+    ('TRAINING AFTER 3 MEALS'),
+    ('TRAINING AFTER 4 MEALS'),
+    ('NON-WEIGHT TRAINING DAY')
+;
+
+INSERT INTO cut_level (name) VALUES
+    ('BASE'),
+    ('FAT LOSS 1'),
+    ('FAT LOSS 2'),
+    ('FAT LOSS 3'),
+    ('MAINTENANCE 1'),
+    ('MAINTENANCE 2'),
+    ('NEW BASE')
+;
+
+INSERT INTO training_level (name) VALUES
+    ('LIGHT'),
+    ('MODERATE'),
+    ('HIGH')
+;

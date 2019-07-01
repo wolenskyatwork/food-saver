@@ -32,19 +32,19 @@ func (store *DBStore) CreateWeight(weight dao.Weight) error {
 
 func (store *DBStore) GetWeights(userId string) ([]*dao.Weight, error) {
  rows, err := store.DB.Query("SELECT id, app_user_id, weight, weight_date FROM weight WHERE app_user_id = $1", userId)
- if err != err {
+ if err != nil {
  	return nil, err
  }
  defer rows.Close()
 
- var weights []*dao.Weight
+ var weights = make([]*dao.Weight, 0)
  for rows.Next() {
-	weight := &dao.Weight{}
-	if err := rows.Scan(&weight.Id, &weight.UserId, &weight.Weight, &weight.WeightDate); err != nil {
+	 weight := &dao.Weight{}
+	 if err := rows.Scan(&weight.Id, &weight.UserId, &weight.Weight, &weight.WeightDate); err != nil {
 		 return nil, err
-	}
+	 }
 
-	weights = append(weights, weight)
+	 weights = append(weights, weight)
  }
 
  return weights, nil

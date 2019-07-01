@@ -253,6 +253,21 @@ func (s *StoreSuite) TestGetWeights() {
 	})
 }
 
+func (s *StoreSuite) TestEmptyGetWeights() {
+	Convey("When no weights exist for user", s.T(), func() {
+		_, err := s.store.DB.Exec("INSERT INTO app_user (username) VALUES ('sailorflares'), ('closgmr');")
+		if err != nil {
+			So(err, ShouldBeNil)
+		}
+
+		Convey("then Service returns correctly mapped weights", func() {
+			weights, err := s.store.GetWeights("1")
+			So(err, ShouldBeNil)
+			So(weights, ShouldHaveLength, 0)
+		})
+	})
+}
+
 func (s *StoreSuite) TestCreateWeight() {
 	_, err := s.store.DB.Exec("INSERT INTO app_user (username) VALUES ('sailorflares'), ('closgmr');")
 	if err != nil {
