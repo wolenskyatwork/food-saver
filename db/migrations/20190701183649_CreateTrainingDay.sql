@@ -14,4 +14,4 @@ CREATE TABLE training_day (
 -- +goose Down
 -- SQL section 'Down' is executed when this migration is rolled back
 
-DROP TABLE training_day
+DROP TABLE training_day CASCADE;
